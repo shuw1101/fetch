@@ -11,11 +11,11 @@
 
 ## Overview
 
-A webservice built with Go that fulfils two APIs - /receipts/process & /receipts/{id}/points. The major code is in the file `main.go`
+A webservice built with Go that fulfils two APIs - `/receipts/process` and `/receipts/{id}/points`. The major code is in the file `main.go`
 
 ## Installation
 
-After installing Go environment, go to the project directory(`fetch` folder), and run commands
+After installing Go environment and downloading project, go to the project directory(`fetch` folder), and run commands
 
 `go run main.go`
 
