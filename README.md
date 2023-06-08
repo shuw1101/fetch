@@ -1,6 +1,4 @@
-# Project Name
-
-Receipt Processor
+## Receipt Processor Project
 
 ## Table of Contents
 
@@ -9,41 +7,85 @@ Receipt Processor
 - [Usage](#usage)
 - [API Endpoints](#api-endpoints)
 - [Dependencies](#dependencies)
-- [Contributing](#contributing)
-- [License](#license)
+
 
 ## Overview
 
-A webservice built with Go that fulfils the two APIs - /receipts/process and /receipts/{id}/points. The major code file is main.go
+A webservice built with Go that fulfils two APIs - /receipts/process & /receipts/{id}/points. The major code is in the file `main.go`
 
 ## Installation
 
-After installing Go environment, go to the project directory(`fetch` folder), and run `go run main.go`
+After installing Go environment, go to the project directory(`fetch` folder), and run commands
+
+`go run main.go`
+
+It will automatically install dependencies and run the service.
 
 ## Usage
 
-If project successfully runs, there will be two apis running on the localhost:3000, which is localhost:3000/receipts/process and localhost:3000/receipts/{id}/points. The data is stored in memory, so it does not persist after application stops.
+If project successfully runs, there will be two APIs running on the localhost:3000, which is localhost:3000/receipts/process and localhost:3000/receipts/{id}/points. The data is stored in memory, so it does not persist after application stops.
+
+* For Post API - localhost:3000/receipts/process: 
+
+the request body is like:
+
+```JSON
+{
+  "retailer": "Target",
+  "purchaseDate": "2022-01-01",
+  "purchaseTime": "13:01",
+  "items": [
+    {
+      "shortDescription": "Mountain Dew 12PK",
+      "price": "6.49"
+    },{
+      "shortDescription": "Emils Cheese Pizza",
+      "price": "12.25"
+    }
+  ],
+  "total": "35.35"
+}
+```
+the response is like:
+
+```JSON
+{ "id": "7fb1377b-b223-49d9-a31a-5a02701dd310" }
+```
+
+*  For Get API - localhost:3000/receipts/{id}/points
+
+construct the url using the id in the response from the post API, like this: `localhost:3000/receipts/7fb1377b-b223-49d9-a31a-5a02701dd310/points`
+
+the response is like:
+
+```JSON
+{ "points": 28 }
+```
 
 ## API Endpoints
 
-Detailed API descreption is already stated clearly in the given api.yml file. There are some notes on edge case handling in implementation.
+The detailed API description can be found in the given `api.yml` file. Additionally, there are some important notes regarding edge case handling in the implementation.
 
-For Post API: localhost:3000/receipts/process
+- POST API: `localhost:3000/receipts/process`
 
-If the filed names in the request body are different from the struct field names(as given in the description file), it will not return errors. An object with ID is still generated. However, only the field with correct names will be matched and saved. When later doing point calculation, only those correct fileds will be considered.
+  - If the field names in the request body differ from those mentioned in the description file, no errors will be returned. However, only the fields with correct names will be matched and saved. During point calculation, only these correct fields will be considered.
 
-It will return an error under following conditions:
+  - The following error conditions will result in a reponse of error message:
 
-* If the request body cannot be read: This might occur if there's a network error or a similar problem.
+    - If the request body cannot be read, possibly due to a network or similar issue.
 
-* If the request body is not valid JSON: If the request body cannot be parsed as a JSON object, you'll get an error.
+    - If the request body is not valid JSON and cannot be parsed as a JSON object.
 
-* If the JSON cannot be unmarshaled into the provided struct: If the JSON structure doesn't match the structure of your struct (for example, if it has fields of the wrong type), you'll get an error.
+    - If the provided JSON cannot be unmarshaled into the specified struct due to structural mismatches or incorrect field types.
+
+- GET API: `localhost:3000/receipts/{id}/points`
+
+  - If the specified ID does not exist, the API will return an error message: "Receipt not found. ID does not exist."
 
 
 ## Dependencies
 
-The external libraries used in project are: 	"github.com/gin-gonic/gin" "github.com/google/uuid"
+The external libraries used in project are: "github.com/gin-gonic/gin" (for routing HTTP requests) and "github.com/google/uuid" (for generating random ID)
 
 
 
